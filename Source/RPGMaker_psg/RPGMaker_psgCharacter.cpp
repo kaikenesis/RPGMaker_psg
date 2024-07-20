@@ -2,6 +2,11 @@
 #include "Camera/CameraComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "Components/InputComponent.h"
+#include "Components/BoxComponent.h"
+#include "Components/CActionComponent.h"
+#include "Components/CStateComponent.h"
+#include "Components/CStatusComponent.h"
+#include "Components/CInteractionComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/Controller.h"
 #include "GameFramework/SpringArmComponent.h"
@@ -34,6 +39,13 @@ ARPGMaker_psgCharacter::ARPGMaker_psgCharacter()
 	FollowCamera->SetupAttachment(CameraBoom, USpringArmComponent::SocketName);
 	FollowCamera->bUsePawnControlRotation = false;
 
+	BoxComp = CreateDefaultSubobject<UBoxComponent>(TEXT("BoxComp"));
+	BoxComp->SetupAttachment(RootComponent);
+	BoxComp->SetBoxExtent(FVector(10.f, 30.f, 20.f));
+
+	ActionComp = CreateDefaultSubobject<UCActionComponent>(TEXT("ActionComp"));
+	StateComp = CreateDefaultSubobject<UCStateComponent>(TEXT("StateComp"));
+	StatusComp = CreateDefaultSubobject<UCStatusComponent>(TEXT("StatusComp"));
 }
 
 void ARPGMaker_psgCharacter::BeginPlay()
@@ -47,6 +59,8 @@ void ARPGMaker_psgCharacter::BeginPlay()
 			Subsystem->AddMappingContext(DefaultMappingContext, 0);
 		}
 	}
+
+	BoxComp->OnComponentBeginOverlap.AddDynamic(this, &ARPGMaker_psgCharacter::OnBeginOverlap_Interaction);
 }
 
 void ARPGMaker_psgCharacter::SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent)
@@ -63,6 +77,16 @@ void ARPGMaker_psgCharacter::SetupPlayerInputComponent(class UInputComponent* Pl
 		EnhancedInputComponent->BindAction(AvoidAction, ETriggerEvent::Started, this, &ARPGMaker_psgCharacter::Avoid);
 	}
 
+}
+
+void ARPGMaker_psgCharacter::OnBeginOverlap_Interaction(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+	TSubclassOf<class UCInteractionComponent> interactCompClass;
+	UCInteractionComponent* interactComp = Cast<UCInteractionComponent>(OtherActor->GetComponentByClass(interactCompClass));
+	if (interactComp != nullptr)
+	{
+
+	}
 }
 
 void ARPGMaker_psgCharacter::Move(const FInputActionValue& Value)
@@ -101,21 +125,15 @@ void ARPGMaker_psgCharacter::DoSomething(const FInputActionValue& Value)
 
 void ARPGMaker_psgCharacter::OnSprint(const FInputActionValue& Value)
 {
-	GEngine->AddOnScreenDebugMessage(-1, 3.f, FColor::Green, "SprintStart");
-	GetCharacterMovement()->MaxWalkSpeed = 800.f;
+	StatusComp->SetMaxWalkSpeed(800.f);
 }
 
 void ARPGMaker_psgCharacter::OnWalk(const FInputActionValue& Value)
 {
-	GEngine->AddOnScreenDebugMessage(-1, 3.f, FColor::Green, "SprintEnd");
-	GetCharacterMovement()->MaxWalkSpeed = 500.f;
+	StatusComp->SetMaxWalkSpeed(500.f);
 }
 
 void ARPGMaker_psgCharacter::Avoid(const FInputActionValue& Value)
 {
 	GEngine->AddOnScreenDebugMessage(-1, 3.f, FColor::Green, "Avoid");
 }
-
-
-
-

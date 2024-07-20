@@ -21,3 +21,24 @@ void UCStateComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActo
 
 }
 
+void UCStateComponent::SetIdleMode()
+{
+	ChangeType(EStateType::Idle);
+}
+
+void UCStateComponent::SetActionMode()
+{
+	ChangeType(EStateType::Action);
+}
+
+void UCStateComponent::SetAvoidMode()
+{
+	ChangeType(EStateType::Avoid);
+}
+
+void UCStateComponent::ChangeType(EStateType InNewType)
+{
+	EStateType prev = Type;
+	Type = InNewType;
+}
+

@@ -2,16 +2,16 @@
 
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
-#include "CStatusComponent.generated.h"
+#include "CInteractionComponent.generated.h"
 
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
-class RPGMAKER_PSG_API UCStatusComponent : public UActorComponent
+class RPGMAKER_PSG_API UCInteractionComponent : public UActorComponent
 {
 	GENERATED_BODY()
 
 public:	
-	UCStatusComponent();
+	UCInteractionComponent();
 
 protected:
 	virtual void BeginPlay() override;
@@ -19,15 +19,7 @@ protected:
 public:	
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
-public:
-	void SetMaxWalkSpeed(float InNewSpeed);
-
 private:
 	class ACharacter* OwnerCharacter;
-
-	UPROPERTY(EditDefaultsOnly, Category = "Status")
-	float MaxHealth;
-
-	UPROPERTY(EditDefaultsOnly, Category = "Status")
-	float MaxStamina;
+	bool bPlayer = false;
 };
