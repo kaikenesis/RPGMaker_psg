@@ -1,9 +1,11 @@
 #include "Characters/InteractCharacter.h"
+#include "Components/CInteractionComponent.h"
 
 AInteractCharacter::AInteractCharacter()
 {
 	PrimaryActorTick.bCanEverTick = true;
 
+	InteractionComp = CreateDefaultSubobject<UCInteractionComponent>(TEXT("InteractionComp"));
 }
 
 void AInteractCharacter::BeginPlay()

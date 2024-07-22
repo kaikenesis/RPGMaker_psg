@@ -20,4 +20,8 @@ public:
 
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
+private:
+	UPROPERTY(EditDefaultsOnly, Category = "Components")
+	class UCInteractionComponent* InteractionComp;
+
 };

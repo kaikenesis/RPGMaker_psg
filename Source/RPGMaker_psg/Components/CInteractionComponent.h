@@ -4,7 +4,6 @@
 #include "Components/ActorComponent.h"
 #include "CInteractionComponent.generated.h"
 
-
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class RPGMAKER_PSG_API UCInteractionComponent : public UActorComponent
 {
