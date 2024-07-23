@@ -13,6 +13,31 @@ class ARPGMaker_psgCharacter : public ACharacter
 {
 	GENERATED_BODY()
 
+public:
+	ARPGMaker_psgCharacter();
+
+protected:
+	virtual void BeginPlay();
+
+	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+
+public:
+	UFUNCTION()
+	void OnBeginOverlap_Interaction(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+
+public:
+	FORCEINLINE class USpringArmComponent* GetCameraBoom() const { return CameraBoom; }
+	FORCEINLINE class UCameraComponent* GetFollowCamera() const { return FollowCamera; }
+
+protected:
+	void OnMove(const FInputActionValue& Value);
+	void OnLook(const FInputActionValue& Value);
+	void OnDoAction(const FInputActionValue& Value);
+	void OnSprint(const FInputActionValue& Value);
+	void OnWalk(const FInputActionValue& Value);
+	void OnAvoid(const FInputActionValue& Value);
+	void OnInteraction(const FInputActionValue& Value);
+
 private: // Camera & Input
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 	class USpringArmComponent* CameraBoom;
@@ -41,11 +66,14 @@ private: // Camera & Input
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	class UInputAction* AvoidAction;
 
-private:
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	class UInputAction* InteractionAction;
+
+private: // SceneComponents
 	UPROPERTY(EditDefaultsOnly)
 	class UBoxComponent* BoxComp;
 
-private: // Components
+private: // ActorComponents
 
 	UPROPERTY(EditDefaultsOnly, Category = Components)
 	class UCActionComponent* ActionComp;
@@ -56,29 +84,7 @@ private: // Components
 	UPROPERTY(EditDefaultsOnly, Category = Components)
 	class UCStatusComponent* StatusComp;
 
-public:
-	ARPGMaker_psgCharacter();
-	
-protected:
-	virtual void BeginPlay();
-	
-	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
-
-public:
-	UFUNCTION()
-	void OnBeginOverlap_Interaction(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
-
-public:
-	FORCEINLINE class USpringArmComponent* GetCameraBoom() const { return CameraBoom; }
-	FORCEINLINE class UCameraComponent* GetFollowCamera() const { return FollowCamera; }
-
-protected:
-	void Move(const FInputActionValue& Value);
-	void Look(const FInputActionValue& Value);
-	void DoSomething(const FInputActionValue& Value);
-	void OnSprint(const FInputActionValue& Value);
-	void OnWalk(const FInputActionValue& Value);
-	void Avoid(const FInputActionValue& Value);
-
+private:
+	TArray<class AActor*> InteractionActors;
 };
 

@@ -7,11 +7,14 @@
 #include "Components/CStateComponent.h"
 #include "Components/CStatusComponent.h"
 #include "Components/CInteractionComponent.h"
+#include "Interfaces/INPCInteraction.h"
+#include "Characters/CInteractCharacter.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/Controller.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
+#include "Kismet/KismetSystemLibrary.h"
 
 ARPGMaker_psgCharacter::ARPGMaker_psgCharacter()
 {
@@ -70,27 +73,27 @@ void ARPGMaker_psgCharacter::SetupPlayerInputComponent(class UInputComponent* Pl
 	{
 		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Triggered, this, &ACharacter::Jump);
 		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Completed, this, &ACharacter::StopJumping);
-		EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &ARPGMaker_psgCharacter::Move);
-		EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &ARPGMaker_psgCharacter::Look);
-		EnhancedInputComponent->BindAction(DoAction, ETriggerEvent::Started, this, &ARPGMaker_psgCharacter::DoSomething);
+		EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &ARPGMaker_psgCharacter::OnMove);
+		EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &ARPGMaker_psgCharacter::OnLook);
+		EnhancedInputComponent->BindAction(DoAction, ETriggerEvent::Started, this, &ARPGMaker_psgCharacter::OnDoAction);
 		EnhancedInputComponent->BindAction(SprintAction, ETriggerEvent::Started, this, &ARPGMaker_psgCharacter::OnSprint);
 		EnhancedInputComponent->BindAction(SprintAction, ETriggerEvent::Completed, this, &ARPGMaker_psgCharacter::OnWalk);
-		EnhancedInputComponent->BindAction(AvoidAction, ETriggerEvent::Started, this, &ARPGMaker_psgCharacter::Avoid);
+		EnhancedInputComponent->BindAction(AvoidAction, ETriggerEvent::Started, this, &ARPGMaker_psgCharacter::OnAvoid);
+		EnhancedInputComponent->BindAction(InteractionAction, ETriggerEvent::Started, this, &ARPGMaker_psgCharacter::OnInteraction);
 	}
 
 }
 
 void ARPGMaker_psgCharacter::OnBeginOverlap_Interaction(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	TSubclassOf<class UCInteractionComponent> interactCompClass;
-	UCInteractionComponent* interactComp = Cast<UCInteractionComponent>(OtherActor->GetComponentByClass(interactCompClass));
-	if (interactComp != nullptr)
+	if (UKismetSystemLibrary::DoesImplementInterface(OtherActor, UINPCInteraction::StaticClass()) == true)
 	{
-
+		GEngine->AddOnScreenDebugMessage(-1, 3.f, FColor::Green, "Detected INPCInteraction");
+		InteractionActors.Add(OtherActor);
 	}
 }
 
-void ARPGMaker_psgCharacter::Move(const FInputActionValue& Value)
+void ARPGMaker_psgCharacter::OnMove(const FInputActionValue& Value)
 {
 	FVector2D MovementVector = Value.Get<FVector2D>();
 
@@ -108,7 +111,7 @@ void ARPGMaker_psgCharacter::Move(const FInputActionValue& Value)
 	}
 }
 
-void ARPGMaker_psgCharacter::Look(const FInputActionValue& Value)
+void ARPGMaker_psgCharacter::OnLook(const FInputActionValue& Value)
 {
 	FVector2D LookAxisVector = Value.Get<FVector2D>();
 
@@ -119,7 +122,7 @@ void ARPGMaker_psgCharacter::Look(const FInputActionValue& Value)
 	}
 }
 
-void ARPGMaker_psgCharacter::DoSomething(const FInputActionValue& Value)
+void ARPGMaker_psgCharacter::OnDoAction(const FInputActionValue& Value)
 {
 	GEngine->AddOnScreenDebugMessage(-1, 3.f, FColor::Green, "Attack");
 }
@@ -134,7 +137,29 @@ void ARPGMaker_psgCharacter::OnWalk(const FInputActionValue& Value)
 	StatusComp->SetMaxWalkSpeed(500.f);
 }
 
-void ARPGMaker_psgCharacter::Avoid(const FInputActionValue& Value)
+void ARPGMaker_psgCharacter::OnInteraction(const FInputActionValue& Value)
+{
+	if (InteractionActors.Num() != 0)
+	{
+		float distance = 0;
+		AActor* targerActor = NULL;
+		for (const auto& actor : InteractionActors)
+		{
+			if (distance < GetDistanceTo(actor))
+			{
+				targerActor = actor;
+				distance = GetDistanceTo(actor);
+			}
+		}
+
+		ACInteractCharacter* interactCharacter = Cast<ACInteractCharacter>(targerActor);
+		if(interactCharacter != nullptr)
+			interactCharacter->ActivateDialogue_Interface();
+
+	}
+}
+
+void ARPGMaker_psgCharacter::OnAvoid(const FInputActionValue& Value)
 {
 	GEngine->AddOnScreenDebugMessage(-1, 3.f, FColor::Green, "Avoid");
 }
