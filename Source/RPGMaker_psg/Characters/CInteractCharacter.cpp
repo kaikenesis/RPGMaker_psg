@@ -1,6 +1,9 @@
 #include "Characters/CInteractCharacter.h"
 #include "Camera/CameraComponent.h"
 #include "Components/CInteractionComponent.h"
+#include "Kismet/GameplayStatics.h"
+#include "Kismet/KismetSystemLibrary.h"
+#include "Blueprint/UserWidget.h"
 
 ACInteractCharacter::ACInteractCharacter()
 {
@@ -18,7 +21,12 @@ ACInteractCharacter::ACInteractCharacter()
 	Camera->SetupAttachment(RootComponent);
 
 	InteractionComp = CreateDefaultSubobject<UCInteractionComponent>(TEXT("InteractionComp"));
+	PlayerController = UGameplayStatics::GetPlayerController(GetWorld(), 0);
+	PlayerCharacter = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0);
 
+	ConstructorHelpers::FClassFinder<UUserWidget> widgetClass(TEXT("/Game/TowerRPG/Widgets/WB_BlackScreen"));
+	if (widgetClass.Succeeded())
+		BlackScreenWidgetClass = widgetClass.Class;
 }
 
 void ACInteractCharacter::BeginPlay()
@@ -41,5 +49,39 @@ void ACInteractCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInput
 
 void ACInteractCharacter::ActivateDialogue_Interface()
 {
+	GEngine->AddOnScreenDebugMessage(-1, 3.f, FColor::Green, "ActivateDialogue_Interface");
+	PlayerAdjustment();
+}
+
+void ACInteractCharacter::PlayerAdjustment()
+{
+	FInputModeUIOnly inputMode;
+	PlayerController->SetInputMode(inputMode);
+	
+}
+
+void ACInteractCharacter::FlashScreen()
+{
+	UUserWidget* blackScreenWidget = CreateWidget(PlayerController, BlackScreenWidgetClass);
+	blackScreenWidget->AddToViewport();
+	FLatentActionInfo latentActionInfo;
+	UKismetSystemLibrary::Delay(GetWorld(), 0.2f, latentActionInfo);
+	
+	PlayerController->SetViewTargetWithBlend(Camera->GetOwner());
+	FTransform transform;
+	float x = PlayerPosition->GetComponentLocation().X;
+	float y = PlayerPosition->GetComponentLocation().Y;
+	float z = PlayerCharacter->GetRootComponent()->GetComponentLocation().Z;
+	transform.SetLocation(FVector(x, y, z));
+	
+	float roll = PlayerCharacter->GetRootComponent()->GetComponentRotation().Roll;
+	float pitch = PlayerCharacter->GetRootComponent()->GetComponentRotation().Pitch;
+	float yaw = GetMesh()->GetComponentRotation().Yaw - 90.f;
+	transform.SetRotation(FQuat(FRotator(pitch, yaw, roll)));
+
+	PlayerCharacter->GetRootComponent()->SetWorldTransform(transform);
+	
+	UKismetSystemLibrary::Delay(GetWorld(), 0.2f, latentActionInfo);
+	blackScreenWidget->RemoveFromParent();
 }
 

@@ -20,8 +20,12 @@ public:
 	virtual void Tick(float DeltaTime) override;
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
-public:
+public: // Interface
 	virtual void ActivateDialogue_Interface() override;
+
+private:
+	void PlayerAdjustment();
+	void FlashScreen();
 
 private: // SceneComponents
 	UPROPERTY(EditDefaultsOnly)
@@ -34,4 +38,8 @@ private: // ActorComponents
 	UPROPERTY(EditDefaultsOnly, Category = "Components")
 	class UCInteractionComponent* InteractionComp;
 
+private:
+	class ACharacter* PlayerCharacter;
+	class APlayerController* PlayerController;
+	TSubclassOf<class UUserWidget> BlackScreenWidgetClass;
 };

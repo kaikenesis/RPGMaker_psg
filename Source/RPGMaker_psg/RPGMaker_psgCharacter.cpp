@@ -155,7 +155,6 @@ void ARPGMaker_psgCharacter::OnInteraction(const FInputActionValue& Value)
 		ACInteractCharacter* interactCharacter = Cast<ACInteractCharacter>(targerActor);
 		if(interactCharacter != nullptr)
 			interactCharacter->ActivateDialogue_Interface();
-
 	}
 }
 
