@@ -65,6 +65,7 @@ void ARPGMaker_psgCharacter::BeginPlay()
 	}
 
 	BoxComp->OnComponentBeginOverlap.AddDynamic(this, &ARPGMaker_psgCharacter::OnBeginOverlap_Interaction);
+	BoxComp->OnComponentEndOverlap.AddDynamic(this, &ARPGMaker_psgCharacter::OnEndOverlap_Interaction);
 }
 
 void ARPGMaker_psgCharacter::SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent)
@@ -88,8 +89,20 @@ void ARPGMaker_psgCharacter::OnBeginOverlap_Interaction(UPrimitiveComponent* Ove
 {
 	if (UKismetSystemLibrary::DoesImplementInterface(OtherActor, UINPCInteraction::StaticClass()) == true)
 	{
-		GEngine->AddOnScreenDebugMessage(-1, 3.f, FColor::Green, "Detected INPCInteraction");
+		GEngine->AddOnScreenDebugMessage(-1, 3.f, FColor::Green, "OnBeginOverlap_Interaction");
 		InteractionActors.Add(OtherActor);
+	}
+}
+
+void ARPGMaker_psgCharacter::OnEndOverlap_Interaction(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
+{
+	if (UKismetSystemLibrary::DoesImplementInterface(OtherActor, UINPCInteraction::StaticClass()) == true)
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 3.f, FColor::Green, "OnEndOverlap_Interaction");
+		if (InteractionActors.Contains(OtherActor))
+		{
+			InteractionActors.Remove(OtherActor);
+		}
 	}
 }
 
@@ -141,20 +154,21 @@ void ARPGMaker_psgCharacter::OnInteraction(const FInputActionValue& Value)
 {
 	if (InteractionActors.Num() != 0)
 	{
-		float distance = 0;
-		AActor* targerActor = NULL;
-		for (const auto& actor : InteractionActors)
+		float distance = 100000.f;
+		AActor* targerActor = nullptr;
+		for (const auto actor : InteractionActors)
 		{
-			if (distance < GetDistanceTo(actor))
+			if (distance >= GetDistanceTo(actor))
 			{
 				targerActor = actor;
 				distance = GetDistanceTo(actor);
 			}
 		}
 
-		ACInteractCharacter* interactCharacter = Cast<ACInteractCharacter>(targerActor);
-		if(interactCharacter != nullptr)
-			interactCharacter->ActivateDialogue_Interface();
+		GEngine->AddOnScreenDebugMessage(-1, 3.f, FColor::Green, "OnInteraction");
+		ACInteractCharacter* character = Cast<ACInteractCharacter>(targerActor);
+		GEngine->AddOnScreenDebugMessage(-1, 3.f, FColor::Green, character->GetName());
+		character->ActivateDialogue_Interface();
 	}
 }
 

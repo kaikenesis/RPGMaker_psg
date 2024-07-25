@@ -21,18 +21,18 @@ ACInteractCharacter::ACInteractCharacter()
 	Camera->SetupAttachment(RootComponent);
 
 	InteractionComp = CreateDefaultSubobject<UCInteractionComponent>(TEXT("InteractionComp"));
-	PlayerController = UGameplayStatics::GetPlayerController(GetWorld(), 0);
-	PlayerCharacter = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0);
 
-	ConstructorHelpers::FClassFinder<UUserWidget> widgetClass(TEXT("/Game/TowerRPG/Widgets/WB_BlackScreen"));
-	if (widgetClass.Succeeded())
-		BlackScreenWidgetClass = widgetClass.Class;
+	ConstructorHelpers::FClassFinder<UUserWidget> widget(TEXT("/Game/TowerRPG/Widgets/WB_BlackScreen"));
+	if (widget.Succeeded())
+		BlackScreenWidgetClass = widget.Class;
 }
 
 void ACInteractCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 	
+	PlayerController = UGameplayStatics::GetPlayerController(GetWorld(), 0);
+	PlayerCharacter = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0);
 }
 
 void ACInteractCharacter::Tick(float DeltaTime)
@@ -49,15 +49,16 @@ void ACInteractCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInput
 
 void ACInteractCharacter::ActivateDialogue_Interface()
 {
-	GEngine->AddOnScreenDebugMessage(-1, 3.f, FColor::Green, "ActivateDialogue_Interface");
 	PlayerAdjustment();
+	FlashScreen();
 }
 
 void ACInteractCharacter::PlayerAdjustment()
 {
+	GEngine->AddOnScreenDebugMessage(-1, 3.f, FColor::Green, "ActivateDialogue_Interface");
 	FInputModeUIOnly inputMode;
-	PlayerController->SetInputMode(inputMode);
-	
+	if(PlayerController != nullptr)
+		PlayerController->SetInputMode(inputMode);
 }
 
 void ACInteractCharacter::FlashScreen()
