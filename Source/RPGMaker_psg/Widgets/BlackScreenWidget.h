@@ -13,6 +13,9 @@ public:
 	virtual void NativeConstruct() override;
 
 public:
+	void PlayAnimFadeInOut();
+
+public:
 	UPROPERTY(BlueprintReadOnly, Transient, meta = (BindWidgetAnim))
 	class UWidgetAnimation* FadeInOut;
 };

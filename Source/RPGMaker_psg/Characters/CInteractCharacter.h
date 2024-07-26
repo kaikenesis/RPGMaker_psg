@@ -26,6 +26,7 @@ public: // Interface
 private:
 	void PlayerAdjustment();
 	void FlashScreen();
+	void SetCameraMove();
 
 private: // SceneComponents
 	UPROPERTY(EditDefaultsOnly)
@@ -41,5 +42,6 @@ private: // ActorComponents
 private:
 	class ACharacter* PlayerCharacter;
 	class APlayerController* PlayerController;
-	TSubclassOf<class UUserWidget> BlackScreenWidgetClass;
+	TSubclassOf<class UBlackScreenWidget> BlackScreenWidgetClass;
+	class UBlackScreenWidget* BlackScreenWidget;
 };
