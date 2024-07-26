@@ -24,7 +24,9 @@ ACInteractCharacter::ACInteractCharacter()
 
 	ConstructorHelpers::FClassFinder<UUserWidget> widget(TEXT("/Game/TowerRPG/Widgets/WB_BlackScreen"));
 	if (widget.Succeeded())
+	{
 		BlackScreenWidgetClass = widget.Class;
+	}
 }
 
 void ACInteractCharacter::BeginPlay()
@@ -55,10 +57,11 @@ void ACInteractCharacter::ActivateDialogue_Interface()
 
 void ACInteractCharacter::PlayerAdjustment()
 {
-	GEngine->AddOnScreenDebugMessage(-1, 3.f, FColor::Green, "ActivateDialogue_Interface");
 	FInputModeUIOnly inputMode;
-	if(PlayerController != nullptr)
+	if (PlayerController != nullptr)
+	{
 		PlayerController->SetInputMode(inputMode);
+	}
 }
 
 void ACInteractCharacter::FlashScreen()
