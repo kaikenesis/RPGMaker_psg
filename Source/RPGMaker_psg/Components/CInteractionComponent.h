@@ -18,7 +18,25 @@ protected:
 public:	
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
+public:
+	void OnInteraction();
+	void AddInteractActor(AActor* InActor);
+	void RemoveInteractActor(AActor* InActor);
+	void PlayerAdjustment();
+	void FlashScreen();
+	void SetCameraMove();
+	void CreateInteractionWidget();
+	
 private:
-	class ACharacter* OwnerCharacter;
-	bool bPlayer = false;
+	void SetNearlyActor();
+
+private:
+	class ARPGMaker_psgCharacter* PlayerCharacter;
+	class APlayerController* PlayerController;
+
+	TArray<class AActor*> InteractionActors;
+	class AActor* TargetActor;
+	
+	class UBlackScreenWidget* BlackScreenWidget;
+	TSubclassOf<class UBlackScreenWidget> BlackScreenWidgetClass;
 };

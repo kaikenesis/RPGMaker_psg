@@ -31,6 +31,7 @@ public:
 public:
 	FORCEINLINE class USpringArmComponent* GetCameraBoom() const { return CameraBoom; }
 	FORCEINLINE class UCameraComponent* GetFollowCamera() const { return FollowCamera; }
+	//FORCEINLINE class APlayerController* GetPlayerController() const { return PlayerController; }
 
 protected:
 	void OnMove(const FInputActionValue& Value);
@@ -86,6 +87,9 @@ private: // ActorComponents
 
 	UPROPERTY(EditDefaultsOnly, Category = Components)
 	class UCStatusComponent* StatusComp;
+
+	UPROPERTY(EditDefaultsOnly, Category = Components)
+	class UCInteractionComponent* InteractionComp;
 
 private:
 	TArray<class AActor*> InteractionActors;

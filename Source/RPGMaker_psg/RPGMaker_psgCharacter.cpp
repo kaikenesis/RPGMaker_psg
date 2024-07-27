@@ -8,7 +8,7 @@
 #include "Components/CStatusComponent.h"
 #include "Components/CInteractionComponent.h"
 #include "Interfaces/INPCInteraction.h"
-#include "Characters/CInteractCharacter.h"
+
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/Controller.h"
 #include "GameFramework/SpringArmComponent.h"
@@ -50,6 +50,7 @@ ARPGMaker_psgCharacter::ARPGMaker_psgCharacter()
 	ActionComp = CreateDefaultSubobject<UCActionComponent>(TEXT("ActionComp"));
 	StateComp = CreateDefaultSubobject<UCStateComponent>(TEXT("StateComp"));
 	StatusComp = CreateDefaultSubobject<UCStatusComponent>(TEXT("StatusComp"));
+	InteractionComp = CreateDefaultSubobject<UCInteractionComponent>(TEXT("InteractionComp"));
 }
 
 void ARPGMaker_psgCharacter::BeginPlay()
@@ -64,6 +65,7 @@ void ARPGMaker_psgCharacter::BeginPlay()
 		}
 	}
 
+	InteractionComp->CreateInteractionWidget();
 	BoxComp->OnComponentBeginOverlap.AddDynamic(this, &ARPGMaker_psgCharacter::OnBeginOverlap_Interaction);
 	BoxComp->OnComponentEndOverlap.AddDynamic(this, &ARPGMaker_psgCharacter::OnEndOverlap_Interaction);
 }
@@ -89,8 +91,7 @@ void ARPGMaker_psgCharacter::OnBeginOverlap_Interaction(UPrimitiveComponent* Ove
 {
 	if (UKismetSystemLibrary::DoesImplementInterface(OtherActor, UINPCInteraction::StaticClass()) == true)
 	{
-		GEngine->AddOnScreenDebugMessage(-1, 3.f, FColor::Green, "OnBeginOverlap_Interaction");
-		InteractionActors.Add(OtherActor);
+		InteractionComp->AddInteractActor(OtherActor);
 	}
 }
 
@@ -98,11 +99,7 @@ void ARPGMaker_psgCharacter::OnEndOverlap_Interaction(UPrimitiveComponent* Overl
 {
 	if (UKismetSystemLibrary::DoesImplementInterface(OtherActor, UINPCInteraction::StaticClass()) == true)
 	{
-		GEngine->AddOnScreenDebugMessage(-1, 3.f, FColor::Green, "OnEndOverlap_Interaction");
-		if (InteractionActors.Contains(OtherActor))
-		{
-			InteractionActors.Remove(OtherActor);
-		}
+		InteractionComp->RemoveInteractActor(OtherActor);
 	}
 }
 
@@ -152,24 +149,7 @@ void ARPGMaker_psgCharacter::OnWalk(const FInputActionValue& Value)
 
 void ARPGMaker_psgCharacter::OnInteraction(const FInputActionValue& Value)
 {
-	if (InteractionActors.Num() != 0)
-	{
-		float distance = 100000.f;
-		AActor* targerActor = nullptr;
-		for (const auto actor : InteractionActors)
-		{
-			if (distance >= GetDistanceTo(actor))
-			{
-				targerActor = actor;
-				distance = GetDistanceTo(actor);
-			}
-		}
-
-		GEngine->AddOnScreenDebugMessage(-1, 3.f, FColor::Green, "OnInteraction");
-		ACInteractCharacter* character = Cast<ACInteractCharacter>(targerActor);
-		GEngine->AddOnScreenDebugMessage(-1, 3.f, FColor::Green, character->GetName());
-		character->ActivateDialogue_Interface();
-	}
+	InteractionComp->OnInteraction();
 }
 
 void ARPGMaker_psgCharacter::OnAvoid(const FInputActionValue& Value)

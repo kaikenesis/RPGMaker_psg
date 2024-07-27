@@ -23,10 +23,10 @@ public:
 public: // Interface
 	virtual void ActivateDialogue_Interface() override;
 
-private:
-	void PlayerAdjustment();
-	void FlashScreen();
-	void SetCameraMove();
+public:
+	
+	FORCEINLINE class UCameraComponent* GetSceneCamera() { return Camera; }
+	FORCEINLINE FVector GetPlayerPosition() { return PlayerPosition->GetComponentLocation(); }
 
 private: // SceneComponents
 	UPROPERTY(EditDefaultsOnly)
@@ -35,13 +35,4 @@ private: // SceneComponents
 	UPROPERTY(EditDefaultsOnly)
 	class UCameraComponent* Camera;
 
-private: // ActorComponents
-	UPROPERTY(EditDefaultsOnly, Category = "Components")
-	class UCInteractionComponent* InteractionComp;
-
-private:
-	class ACharacter* PlayerCharacter;
-	class APlayerController* PlayerController;
-	TSubclassOf<class UBlackScreenWidget> BlackScreenWidgetClass;
-	class UBlackScreenWidget* BlackScreenWidget;
 };
