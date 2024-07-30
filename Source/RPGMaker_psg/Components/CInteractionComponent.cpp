@@ -14,7 +14,6 @@ UCInteractionComponent::UCInteractionComponent()
 	if (character != nullptr)
 	{
 		PlayerCharacter = character;
-		PlayerController = PlayerCharacter->GetLocalViewingPlayerController();
 	}
 
 	ConstructorHelpers::FClassFinder<UBlackScreenWidget> widgetAsset(TEXT("/Game/TowerRPG/Widgets/WB_BlackScreen"));
@@ -29,7 +28,8 @@ void UCInteractionComponent::BeginPlay()
 {
 	Super::BeginPlay();
 
-	BlackScreenWidget = Cast<UBlackScreenWidget>(CreateWidget(PlayerCharacter->GetLocalViewingPlayerController(), BlackScreenWidgetClass));
+	PlayerController = PlayerCharacter->GetLocalViewingPlayerController();
+	BlackScreenWidget = Cast<UBlackScreenWidget>(CreateWidget(PlayerController, BlackScreenWidgetClass));
 	BlackScreenWidget->AddToViewport();
 	BlackScreenWidget->SetVisibility(ESlateVisibility::Hidden);
 }
@@ -75,7 +75,7 @@ void UCInteractionComponent::RemoveInteractActor(AActor* InActor)
 void UCInteractionComponent::PlayerAdjustment()
 {
 	FInputModeUIOnly inputMode;
-	PlayerCharacter->GetLocalViewingPlayerController()->SetInputMode(inputMode);
+	PlayerController->SetInputMode(inputMode);
 }
 
 void UCInteractionComponent::FlashScreen()
@@ -94,7 +94,7 @@ void UCInteractionComponent::SetCameraMove()
 	ACInteractCharacter* interactionCharacter = Cast<ACInteractCharacter>(TargetActor);
 
 	AActor* viewTarget = interactionCharacter->GetSceneCamera()->GetOwner();
-	PlayerCharacter->GetLocalViewingPlayerController()->SetViewTargetWithBlend(viewTarget);
+	PlayerController->SetViewTargetWithBlend(viewTarget);
 	
 	FTransform transform;
 	float x = interactionCharacter->GetPlayerPosition().X;
