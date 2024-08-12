@@ -4,6 +4,7 @@
 #include "Camera/CameraComponent.h"
 #include "Characters/CInteractCharacter.h"
 #include "Widgets/BlackScreenWidget.h"
+#include "Widgets/TowerRpgHudWidget.h"
 #include "Kismet/GameplayStatics.h"
 
 UCInteractionComponent::UCInteractionComponent()
@@ -21,6 +22,12 @@ UCInteractionComponent::UCInteractionComponent()
 	{
 		BlackScreenWidgetClass = widgetAsset.Class;
 	}
+
+	ConstructorHelpers::FClassFinder<UTowerRpgHudWidget> hudwidgetAsset(TEXT("/Game/TowerRPG/Widgets/WB_HUD"));
+	if (hudwidgetAsset.Succeeded())
+	{
+		HUDWidgetClass = hudwidgetAsset.Class;
+	}
 }
 
 
@@ -29,9 +36,14 @@ void UCInteractionComponent::BeginPlay()
 	Super::BeginPlay();
 
 	PlayerController = PlayerCharacter->GetLocalViewingPlayerController();
+
 	BlackScreenWidget = Cast<UBlackScreenWidget>(CreateWidget(PlayerController, BlackScreenWidgetClass));
 	BlackScreenWidget->AddToViewport();
 	BlackScreenWidget->SetVisibility(ESlateVisibility::Hidden);
+
+	HUDWidget = Cast<UTowerRpgHudWidget>(CreateWidget(PlayerController, HUDWidgetClass));
+	HUDWidget->AddToViewport();
+	HUDWidget->SetVisibilityNpcDialogue(ESlateVisibility::Hidden);
 }
 
 

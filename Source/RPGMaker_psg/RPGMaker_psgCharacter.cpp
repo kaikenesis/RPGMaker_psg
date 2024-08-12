@@ -8,7 +8,6 @@
 #include "Components/CStatusComponent.h"
 #include "Components/CInteractionComponent.h"
 #include "Interfaces/INPCInteraction.h"
-
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/Controller.h"
 #include "GameFramework/SpringArmComponent.h"
@@ -68,6 +67,8 @@ void ARPGMaker_psgCharacter::BeginPlay()
 	InteractionComp->CreateInteractionWidget();
 	BoxComp->OnComponentBeginOverlap.AddDynamic(this, &ARPGMaker_psgCharacter::OnBeginOverlap_Interaction);
 	BoxComp->OnComponentEndOverlap.AddDynamic(this, &ARPGMaker_psgCharacter::OnEndOverlap_Interaction);
+
+	
 }
 
 void ARPGMaker_psgCharacter::SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent)

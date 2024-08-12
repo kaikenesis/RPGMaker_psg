@@ -39,4 +39,6 @@ private:
 	
 	class UBlackScreenWidget* BlackScreenWidget;
 	TSubclassOf<class UBlackScreenWidget> BlackScreenWidgetClass;
+	class UTowerRpgHudWidget* HUDWidget;
+	TSubclassOf<class UTowerRpgHudWidget> HUDWidgetClass;
 };
