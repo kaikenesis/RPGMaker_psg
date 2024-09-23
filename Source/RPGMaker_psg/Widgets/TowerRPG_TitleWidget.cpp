@@ -17,4 +17,5 @@ void UTowerRPG_TitleWidget::OnStartGame()
 
 void UTowerRPG_TitleWidget::OnEndGame()
 {
+	UKismetSystemLibrary::QuitGame(GetWorld(), UGameplayStatics::GetPlayerController(GetWorld(), 0), EQuitPreference::Quit, false);
 }
