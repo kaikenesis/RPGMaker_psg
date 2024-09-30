@@ -25,7 +25,10 @@ public:
 	void PlayerAdjustment();
 	void FlashScreen();
 	void SetCameraMove();
-	void CreateInteractionWidget();
+	void InitWidget();
+
+	void SetPlayWidget();
+	void SetDialogSceneWidget();
 	
 private:
 	void SetNearlyActor();

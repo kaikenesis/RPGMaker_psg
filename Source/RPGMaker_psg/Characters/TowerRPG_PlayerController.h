@@ -12,6 +12,12 @@ class RPGMAKER_PSG_API ATowerRPG_PlayerController : public APlayerController
 public:
 	ATowerRPG_PlayerController();
 
-public:
+	virtual void BeginPlay() override;
 
+private:
+	void Init();
+
+public:
+	void SetInputModeUIOnly();
+	void SetInputModeGameOnly();
 };

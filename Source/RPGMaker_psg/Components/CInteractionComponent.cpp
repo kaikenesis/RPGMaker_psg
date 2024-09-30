@@ -6,6 +6,8 @@
 #include "Widgets/BlackScreenWidget.h"
 #include "Widgets/TowerRpgHudWidget.h"
 #include "Kismet/GameplayStatics.h"
+#include "GameFramework/HUD.h"
+#include "CGameInstance.h"
 
 UCInteractionComponent::UCInteractionComponent()
 {
@@ -23,7 +25,7 @@ UCInteractionComponent::UCInteractionComponent()
 		BlackScreenWidgetClass = widgetAsset.Class;
 	}
 
-	ConstructorHelpers::FClassFinder<UTowerRpgHudWidget> hudwidgetAsset(TEXT("/Game/TowerRPG/Widgets/WB_HUD"));
+	static ConstructorHelpers::FClassFinder<UTowerRpgHudWidget> hudwidgetAsset(TEXT("/Game/TowerRPG/Widgets/WB_HUD"));
 	if (hudwidgetAsset.Succeeded())
 	{
 		HUDWidgetClass = hudwidgetAsset.Class;
@@ -38,12 +40,11 @@ void UCInteractionComponent::BeginPlay()
 	PlayerController = PlayerCharacter->GetLocalViewingPlayerController();
 
 	BlackScreenWidget = Cast<UBlackScreenWidget>(CreateWidget(PlayerController, BlackScreenWidgetClass));
-	BlackScreenWidget->AddToViewport();
-	BlackScreenWidget->SetVisibility(ESlateVisibility::Hidden);
-
-	HUDWidget = Cast<UTowerRpgHudWidget>(CreateWidget(PlayerController, HUDWidgetClass));
-	HUDWidget->AddToViewport();
-	HUDWidget->SetVisibilityNpcDialogue(ESlateVisibility::Hidden);
+	if (BlackScreenWidget != nullptr)
+	{
+		BlackScreenWidget->AddToViewport();
+		BlackScreenWidget->SetVisibility(ESlateVisibility::Hidden);
+	}
 }
 
 
@@ -122,9 +123,35 @@ void UCInteractionComponent::SetCameraMove()
 	PlayerCharacter->GetRootComponent()->SetWorldTransform(transform);
 }
 
-void UCInteractionComponent::CreateInteractionWidget()
+void UCInteractionComponent::InitWidget()
 {
-	
+	UCGameInstance* gameInst = Cast<UCGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));
+	GEngine->AddOnScreenDebugMessage(-1, 3.f, FColor::Green, gameInst->GetName());
+	HUDWidget = Cast<UTowerRpgHudWidget>(CreateWidget(PlayerController, gameInst->GetHUDWidgetClass()));
+	if (HUDWidget != nullptr)
+	{
+		HUDWidget->AddToViewport();
+		SetPlayWidget();
+	}
+}
+
+void UCInteractionComponent::SetPlayWidget()
+{
+	GEngine->AddOnScreenDebugMessage(-1, 3.f, FColor::Green, "interactionComp->SetPlayWidget()");
+	if (HUDWidget != nullptr)
+	{
+		HUDWidget->SetVisibilityQuestLog(ESlateVisibility::Visible);
+		HUDWidget->SetVisibilityNpcDialogue(ESlateVisibility::Hidden);
+	}
+}
+
+void UCInteractionComponent::SetDialogSceneWidget()
+{
+	if (HUDWidget != nullptr)
+	{
+		HUDWidget->SetVisibilityQuestLog(ESlateVisibility::Hidden);
+		HUDWidget->SetVisibilityNpcDialogue(ESlateVisibility::Visible);
+	}
 }
 
 void UCInteractionComponent::SetNearlyActor()

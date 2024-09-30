@@ -64,11 +64,8 @@ void ARPGMaker_psgCharacter::BeginPlay()
 		}
 	}
 
-	InteractionComp->CreateInteractionWidget();
 	BoxComp->OnComponentBeginOverlap.AddDynamic(this, &ARPGMaker_psgCharacter::OnBeginOverlap_Interaction);
 	BoxComp->OnComponentEndOverlap.AddDynamic(this, &ARPGMaker_psgCharacter::OnEndOverlap_Interaction);
-
-	
 }
 
 void ARPGMaker_psgCharacter::SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent)
@@ -102,6 +99,11 @@ void ARPGMaker_psgCharacter::OnEndOverlap_Interaction(UPrimitiveComponent* Overl
 	{
 		InteractionComp->RemoveInteractActor(OtherActor);
 	}
+}
+
+void ARPGMaker_psgCharacter::CreateWidget()
+{
+	InteractionComp->InitWidget();
 }
 
 void ARPGMaker_psgCharacter::OnMove(const FInputActionValue& Value)

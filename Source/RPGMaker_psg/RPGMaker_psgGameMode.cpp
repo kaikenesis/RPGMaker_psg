@@ -1,12 +1,10 @@
-// Copyright Epic Games, Inc. All Rights Reserved.
-
 #include "RPGMaker_psgGameMode.h"
 #include "RPGMaker_psgCharacter.h"
 #include "UObject/ConstructorHelpers.h"
+#include "Widgets/TowerRpgHudWidget.h"
 
 ARPGMaker_psgGameMode::ARPGMaker_psgGameMode()
 {
-	// set default pawn class to our Blueprinted character
 	static ConstructorHelpers::FClassFinder<APawn> PlayerPawnBPClass(TEXT("/Game/TowerRPG/Blueprints/Character/BP_PlayerCharacter"));
 	if (PlayerPawnBPClass.Class != NULL)
 	{

@@ -33,6 +33,10 @@ public:
 	FORCEINLINE class UCameraComponent* GetFollowCamera() const { return FollowCamera; }
 	//FORCEINLINE class APlayerController* GetPlayerController() const { return PlayerController; }
 
+public:
+	UFUNCTION(BlueprintCallable)
+	void CreateWidget();
+
 protected:
 	void OnMove(const FInputActionValue& Value);
 	void OnLook(const FInputActionValue& Value);

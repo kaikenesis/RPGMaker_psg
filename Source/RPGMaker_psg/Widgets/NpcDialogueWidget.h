@@ -9,7 +9,27 @@ class RPGMAKER_PSG_API UNpcDialogueWidget : public UUserWidget
 {
 	GENERATED_BODY()
 	
+public:
+	virtual void NativeConstruct() override;
+
+public:
+	void PlayAnimFadeInResponsse();
+	void PlayAnimFadeOutResponsse();
+	
+	void ShowDialog();
+	void HideDialog();
+
+private:
+	void Init();
+
+public:
+	UPROPERTY(BlueprintReadOnly, Transient, meta = (BindWidgetAnim))
+	class UWidgetAnimation* FadeInOutResponse;
+
 protected:
+	UPROPERTY(meta = (BindWidget))
+	class UOverlay* Dialog;
+
 	UPROPERTY(meta = (BindWidget))
 	class UTextBlock* Name;
 
