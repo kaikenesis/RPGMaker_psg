@@ -35,6 +35,8 @@ void UCInteractionComponent::BeginPlay()
 {
 	Super::BeginPlay();
 
+	GEngine->AddOnScreenDebugMessage(-1, 3.f, FColor::Green, "InteractionComp_BeginPlay");
+
 	PlayerController = PlayerCharacter->GetLocalViewingPlayerController();
 
 	BlackScreenWidget = Cast<UBlackScreenWidget>(CreateWidget(PlayerController, BlackScreenWidgetClass));
@@ -44,6 +46,7 @@ void UCInteractionComponent::BeginPlay()
 	HUDWidget = Cast<UTowerRpgHudWidget>(CreateWidget(PlayerController, HUDWidgetClass));
 	HUDWidget->AddToViewport();
 	HUDWidget->SetVisibilityNpcDialogue(ESlateVisibility::Hidden);
+	HUDWidget->SetVisibilityQuestLog(ESlateVisibility::Visible);
 }
 
 
@@ -51,6 +54,12 @@ void UCInteractionComponent::TickComponent(float DeltaTime, ELevelTick TickType,
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
+}
+
+void UCInteractionComponent::VisiblityQuestLog(bool bVisible)
+{
+	if (bVisible == true) HUDWidget->SetVisibilityQuestLog(ESlateVisibility::Visible);
+	else HUDWidget->SetVisibilityQuestLog(ESlateVisibility::Hidden);
 }
 
 void UCInteractionComponent::OnInteraction()
