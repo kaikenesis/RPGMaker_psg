@@ -1,10 +1,8 @@
 #include "Widgets/TowerRPG_TitleWidget.h"
 #include "Components/Button.h"
 #include "Components/Image.h"
-#include "TowerRPG_TitleWidget.h"
 #include "Kismet/GameplayStatics.h"
-#include "Characters/TowerRPG_PlayerController.h"
-#include "RPGMaker_psgCharacter.h"
+#include "TowerRPG_TitleWidget.h"
 
 void UTowerRPG_TitleWidget::NativeConstruct()
 {

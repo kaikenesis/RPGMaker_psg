@@ -45,6 +45,13 @@ void UCInteractionComponent::BeginPlay()
 		BlackScreenWidget->AddToViewport();
 		BlackScreenWidget->SetVisibility(ESlateVisibility::Hidden);
 	}
+
+	HUDWidget = Cast<UTowerRpgHudWidget>(CreateWidget(PlayerController, HUDWidgetClass));
+	if (HUDWidget != nullptr)
+	{
+		HUDWidget->AddToViewport();
+		HUDWidget->SetVisibilityNpcDialogue(ESlateVisibility::Hidden);
+	}
 }
 
 
