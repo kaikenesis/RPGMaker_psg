@@ -19,6 +19,10 @@ public:
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
 public:
+	UFUNCTION(BlueprintCallable)
+	void VisiblityQuestLog(bool bVisible);
+
+public:
 	void OnInteraction();
 	void AddInteractActor(AActor* InActor);
 	void RemoveInteractActor(AActor* InActor);
