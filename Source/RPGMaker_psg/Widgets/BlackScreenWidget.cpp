@@ -1,4 +1,5 @@
 #include "Widgets/BlackScreenWidget.h"
+#include "Animation/WidgetAnimation.h"
 
 void UBlackScreenWidget::NativeConstruct()
 {

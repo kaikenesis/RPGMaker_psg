@@ -24,9 +24,13 @@ public: // Interface
 	virtual void ActivateDialogue_Interface() override;
 
 public:
-	
 	FORCEINLINE class UCameraComponent* GetSceneCamera() { return Camera; }
 	FORCEINLINE FVector GetPlayerPosition() { return PlayerPosition->GetComponentLocation(); }
+	FORCEINLINE class UDataTable* GetDialogueList() { return CurrentDialogueList; }
+
+public:
+	UPROPERTY(EditDefaultsOnly, Category = "Settings")
+	class UDataTable* DefaultsDialogueList;
 
 private: // SceneComponents
 	UPROPERTY(EditDefaultsOnly)
@@ -35,4 +39,5 @@ private: // SceneComponents
 	UPROPERTY(EditDefaultsOnly)
 	class UCameraComponent* Camera;
 
+	class UDataTable* CurrentDialogueList;
 };

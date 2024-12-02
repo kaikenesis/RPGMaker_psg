@@ -1,7 +1,7 @@
 #include "Widgets/NpcDialogueWidget.h"
 #include "Components/VerticalBox.h"
 #include "Components/Overlay.h"
-#include "Animation/WidgetAnimation.h"
+#include "Engine/DataTable.h"
 
 void UNpcDialogueWidget::NativeConstruct()
 {
@@ -20,8 +20,9 @@ void UNpcDialogueWidget::PlayAnimFadeOutResponsse()
 	ResponseContainor->SetVisibility(ESlateVisibility::Hidden);
 }
 
-void UNpcDialogueWidget::ShowDialog()
+void UNpcDialogueWidget::ShowDialog(UDataTable* inDialogue)
 {
+	CurrentDialogueList = inDialogue;
 	Dialog->SetVisibility(ESlateVisibility::Visible);
 }
 

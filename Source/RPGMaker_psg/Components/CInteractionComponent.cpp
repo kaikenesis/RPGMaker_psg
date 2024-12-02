@@ -39,18 +39,18 @@ void UCInteractionComponent::BeginPlay()
 
 	PlayerController = PlayerCharacter->GetLocalViewingPlayerController();
 
-	BlackScreenWidget = Cast<UBlackScreenWidget>(CreateWidget(PlayerController, BlackScreenWidgetClass));
-	if (BlackScreenWidget != nullptr)
-	{
-		BlackScreenWidget->AddToViewport();
-		BlackScreenWidget->SetVisibility(ESlateVisibility::Hidden);
-	}
-
 	HUDWidget = Cast<UTowerRpgHudWidget>(CreateWidget(PlayerController, HUDWidgetClass));
 	if (HUDWidget != nullptr)
 	{
 		HUDWidget->AddToViewport();
 		HUDWidget->SetVisibilityNpcDialogue(ESlateVisibility::Hidden);
+	}
+
+	BlackScreenWidget = Cast<UBlackScreenWidget>(CreateWidget(PlayerController, BlackScreenWidgetClass));
+	if (BlackScreenWidget != nullptr)
+	{
+		BlackScreenWidget->AddToViewport();
+		BlackScreenWidget->SetVisibility(ESlateVisibility::Hidden);
 	}
 }
 
@@ -68,12 +68,15 @@ void UCInteractionComponent::OnInteraction()
 		SetNearlyActor();
 
 		GEngine->AddOnScreenDebugMessage(-1, 3.f, FColor::Green, "OnInteraction");
-		ACInteractCharacter* character = Cast<ACInteractCharacter>(TargetActor);
-		GEngine->AddOnScreenDebugMessage(-1, 3.f, FColor::Green, character->GetName());
-
-		PlayerAdjustment();
-		FlashScreen();
-		character->ActivateDialogue_Interface();
+		ACInteractCharacter* target = Cast<ACInteractCharacter>(TargetActor);
+		if (target != nullptr)
+		{
+			GEngine->AddOnScreenDebugMessage(-1, 3.f, FColor::Green, target->GetName());
+			
+			PlayerAdjustment();
+			FlashScreen();
+			target->ActivateDialogue_Interface();
+		}
 	}
 }
 
@@ -128,6 +131,7 @@ void UCInteractionComponent::SetCameraMove()
 	transform.SetRotation(FQuat(FRotator(pitch, yaw, roll)));
 
 	PlayerCharacter->GetRootComponent()->SetWorldTransform(transform);
+	SetDialogSceneWidget();
 }
 
 void UCInteractionComponent::InitWidget()
@@ -157,7 +161,11 @@ void UCInteractionComponent::SetDialogSceneWidget()
 	if (HUDWidget != nullptr)
 	{
 		HUDWidget->SetVisibilityQuestLog(ESlateVisibility::Hidden);
-		HUDWidget->SetVisibilityNpcDialogue(ESlateVisibility::Visible);
+		ACInteractCharacter* target = Cast<ACInteractCharacter>(TargetActor);
+		if (target != nullptr)
+			HUDWidget->SetVisibilityNpcDialogue(ESlateVisibility::Visible, target->GetDialogueList());
+		else
+			HUDWidget->SetVisibilityNpcDialogue(ESlateVisibility::Visible);
 	}
 }
 

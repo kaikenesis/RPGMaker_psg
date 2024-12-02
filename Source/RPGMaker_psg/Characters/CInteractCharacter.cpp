@@ -24,6 +24,7 @@ void ACInteractCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 	
+	CurrentDialogueList = DefaultsDialogueList;
 }
 
 void ACInteractCharacter::Tick(float DeltaTime)

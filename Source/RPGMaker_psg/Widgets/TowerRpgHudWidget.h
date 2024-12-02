@@ -15,7 +15,7 @@ public:
 
 public:
 	void SetVisibilityQuestLog(ESlateVisibility InVisibility);
-	void SetVisibilityNpcDialogue(ESlateVisibility InVisibility);
+	void SetVisibilityNpcDialogue(ESlateVisibility InVisibility, class UDataTable* inDialogueList = nullptr);
 
 private:
 	UPROPERTY(meta = (BindWidget))

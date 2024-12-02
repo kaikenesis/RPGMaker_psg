@@ -16,7 +16,7 @@ public:
 	void PlayAnimFadeInResponsse();
 	void PlayAnimFadeOutResponsse();
 	
-	void ShowDialog();
+	void ShowDialog(class UDataTable* inDialogueList);
 	void HideDialog();
 
 private:
@@ -62,4 +62,7 @@ protected:
 
 	UPROPERTY(meta = (BindWidget))
 	class UTextBlock* ResponseText4;
+
+private:
+	class UDataTable* CurrentDialogueList;
 };
