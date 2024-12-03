@@ -63,21 +63,10 @@ void UCInteractionComponent::TickComponent(float DeltaTime, ELevelTick TickType,
 
 void UCInteractionComponent::OnInteraction()
 {
-	if (InteractionActors.Num() != 0)
-	{
-		SetNearlyActor();
-
-		GEngine->AddOnScreenDebugMessage(-1, 3.f, FColor::Green, "OnInteraction");
-		ACInteractCharacter* target = Cast<ACInteractCharacter>(TargetActor);
-		if (target != nullptr)
-		{
-			GEngine->AddOnScreenDebugMessage(-1, 3.f, FColor::Green, target->GetName());
-			
-			PlayerAdjustment();
-			FlashScreen();
-			target->ActivateDialogue_Interface();
-		}
-	}
+	if (bPlayDialogue)
+		NextDialogue();
+	else
+		StartDialogue();
 }
 
 void UCInteractionComponent::AddInteractActor(AActor* InActor)
@@ -95,9 +84,20 @@ void UCInteractionComponent::RemoveInteractActor(AActor* InActor)
 	}
 }
 
+void UCInteractionComponent::InitWidget()
+{
+	UCGameInstance* gameInst = Cast<UCGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));
+	HUDWidget = Cast<UTowerRpgHudWidget>(CreateWidget(PlayerController, gameInst->GetHUDWidgetClass()));
+	if (HUDWidget != nullptr)
+	{
+		HUDWidget->AddToViewport();
+		SetPlayWidget();
+	}
+}
+
 void UCInteractionComponent::PlayerAdjustment()
 {
-	FInputModeUIOnly inputMode;
+	FInputModeGameAndUI inputMode;
 	PlayerController->SetInputMode(inputMode);
 }
 
@@ -108,8 +108,25 @@ void UCInteractionComponent::FlashScreen()
 
 	BlackScreenWidget->SetVisibility(ESlateVisibility::Visible);
 	BlackScreenWidget->PlayAnimFadeInOut();
-	GetWorld()->GetTimerManager().SetTimer(timerCameraHandle, this, &UCInteractionComponent::SetCameraMove, 0.2f, false);
+	if (bPlayDialogue == false)
+	{
+		GetWorld()->GetTimerManager().SetTimer(timerCameraHandle, this, &UCInteractionComponent::ChangeGameToDialogue, 0.2f, false);
+	}
+	else
+	{
+		GetWorld()->GetTimerManager().SetTimer(timerCameraHandle, this, &UCInteractionComponent::ChangeDialogueToGame, 0.2f, false);
+	}
 	GetWorld()->GetTimerManager().SetTimer(timerWidgetHandle, [&]() { BlackScreenWidget->SetVisibility(ESlateVisibility::Hidden); }, 0.5f, false);
+}
+
+void UCInteractionComponent::ChangeGameToDialogue()
+{
+	SetCameraMove();
+	SetDialogSceneWidget();
+}
+
+void UCInteractionComponent::ChangeDialogueToGame()
+{
 }
 
 void UCInteractionComponent::SetCameraMove()
@@ -131,20 +148,9 @@ void UCInteractionComponent::SetCameraMove()
 	transform.SetRotation(FQuat(FRotator(pitch, yaw, roll)));
 
 	PlayerCharacter->GetRootComponent()->SetWorldTransform(transform);
-	SetDialogSceneWidget();
 }
 
-void UCInteractionComponent::InitWidget()
-{
-	UCGameInstance* gameInst = Cast<UCGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));
-	GEngine->AddOnScreenDebugMessage(-1, 3.f, FColor::Green, gameInst->GetName());
-	HUDWidget = Cast<UTowerRpgHudWidget>(CreateWidget(PlayerController, gameInst->GetHUDWidgetClass()));
-	if (HUDWidget != nullptr)
-	{
-		HUDWidget->AddToViewport();
-		SetPlayWidget();
-	}
-}
+
 
 void UCInteractionComponent::SetPlayWidget()
 {
@@ -184,4 +190,38 @@ void UCInteractionComponent::SetNearlyActor()
 	}
 
 	TargetActor = targetActor;
+}
+
+void UCInteractionComponent::StartDialogue()
+{
+	if (InteractionActors.Num() != 0)
+	{
+		SetNearlyActor();
+
+		GEngine->AddOnScreenDebugMessage(-1, 3.f, FColor::Green, "OnInteraction");
+		ACInteractCharacter* target = Cast<ACInteractCharacter>(TargetActor);
+		if (target != nullptr)
+		{
+			GEngine->AddOnScreenDebugMessage(-1, 3.f, FColor::Green, target->GetName());
+
+			PlayerAdjustment();
+			FlashScreen();
+			target->ActivateDialogue_Interface();
+
+			bPlayDialogue = true;
+		}
+	}
+}
+
+void UCInteractionComponent::FinishDialogue()
+{
+}
+
+void UCInteractionComponent::NextDialogue()
+{
+	bPlayDialogue = HUDWidget->NextNPCDialogue();
+	if (bPlayDialogue == false)
+	{
+
+	}
 }

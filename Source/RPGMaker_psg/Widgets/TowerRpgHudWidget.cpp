@@ -10,7 +10,12 @@ void UTowerRpgHudWidget::SetVisibilityQuestLog(ESlateVisibility InVisibility)
 void UTowerRpgHudWidget::SetVisibilityNpcDialogue(ESlateVisibility InVisibility, UDataTable* inDialogueList)
 {
 	if (InVisibility == ESlateVisibility::Visible)
-		NpcDialogue->ShowDialog(inDialogueList);
+		NpcDialogue->ShowDialogue(inDialogueList);
 	else if(InVisibility == ESlateVisibility::Hidden)
-		NpcDialogue->HideDialog();
+		NpcDialogue->HideDialogue();
+}
+
+bool UTowerRpgHudWidget::NextNPCDialogue()
+{
+	return NpcDialogue->NextDialogue();
 }

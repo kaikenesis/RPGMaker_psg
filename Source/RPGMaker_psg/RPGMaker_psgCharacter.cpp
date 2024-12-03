@@ -108,6 +108,8 @@ void ARPGMaker_psgCharacter::CreateWidget()
 
 void ARPGMaker_psgCharacter::OnMove(const FInputActionValue& Value)
 {
+	if (InteractionComp->IsPlayDialogue()) return;
+
 	FVector2D MovementVector = Value.Get<FVector2D>();
 
 	if (Controller != nullptr)

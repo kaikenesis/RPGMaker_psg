@@ -21,7 +21,7 @@ struct FDialogueList : public FTableRowBase
 	GENERATED_BODY()
 public:
 	UPROPERTY(BlueprintReadOnly, EditAnywhere)
-	FDataTableRowHandle Handle;
+	FDataTableRowHandle DialogueHandles;
 
 	UPROPERTY(BlueprintReadOnly, EditAnywhere)
 	FName Name;
@@ -29,8 +29,6 @@ public:
 	UPROPERTY(BlueprintReadOnly, EditAnywhere)
 	FName Description;
 
-	UPROPERTY(BlueprintReadOnly, EditAnywhere)
-	TArray<FDataTableRowHandle> Dialogues;
 };
 
 USTRUCT(BlueprintType)
@@ -39,22 +37,10 @@ struct FDialogueSettings : public FTableRowBase
 	GENERATED_BODY()
 public:
 	UPROPERTY(BlueprintReadOnly, EditAnywhere)
-	FDataTableRowHandle Handle;
-
-	UPROPERTY(BlueprintReadOnly, EditAnywhere)
-	FName Name;
-
-	UPROPERTY(BlueprintReadOnly, EditAnywhere)
-	FName Description;
-
-	UPROPERTY(BlueprintReadOnly, EditAnywhere)
-	FText NPCName;
+	FDataTableRowHandle ResponseHandles;
 
 	UPROPERTY(BlueprintReadOnly, EditAnywhere)
 	FText Message;
-
-	UPROPERTY(BlueprintReadOnly, EditAnywhere)
-	TArray<FDataTableRowHandle> ResponseMessages;
 };
 
 USTRUCT(BlueprintType)
@@ -63,14 +49,11 @@ struct FResponseMessageSettings : public FTableRowBase
 	GENERATED_BODY()
 public:
 	UPROPERTY(BlueprintReadOnly, EditAnywhere)
-	FDataTableRowHandle Handle;
+	FDataTableRowHandle DialogueHandles;
 
 	UPROPERTY(BlueprintReadOnly, EditAnywhere)
 	EMessageButton MessageButton;
 
 	UPROPERTY(BlueprintReadOnly, EditAnywhere)
 	FText PlayerResponse;
-
-	UPROPERTY(BlueprintReadOnly, EditAnywhere)
-	TArray<FText> NPCResponseMessage;
 };

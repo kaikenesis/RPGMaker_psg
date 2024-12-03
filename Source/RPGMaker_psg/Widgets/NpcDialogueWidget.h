@@ -16,11 +16,13 @@ public:
 	void PlayAnimFadeInResponsse();
 	void PlayAnimFadeOutResponsse();
 	
-	void ShowDialog(class UDataTable* inDialogueList);
-	void HideDialog();
+	void ShowDialogue(class UDataTable* inDialogueList);
+	void HideDialogue();
+	bool NextDialogue();
 
 private:
 	void Init();
+	void DialogueSetting(class UDataTable* inDialogueList);
 
 public:
 	UPROPERTY(BlueprintReadOnly, Transient, meta = (BindWidgetAnim))
@@ -65,4 +67,6 @@ protected:
 
 private:
 	class UDataTable* CurrentDialogueList;
+	TArray<struct FDialogueSettings*> CurrentDialogue;
+	int curPage = 0;
 };

@@ -19,19 +19,26 @@ public:
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
 public:
+	FORCEINLINE bool IsPlayDialogue() { return bPlayDialogue; }
+
+public:
 	void OnInteraction();
 	void AddInteractActor(AActor* InActor);
 	void RemoveInteractActor(AActor* InActor);
-	void PlayerAdjustment();
-	void FlashScreen();
-	void SetCameraMove();
 	void InitWidget();
-
-	void SetPlayWidget();
-	void SetDialogSceneWidget();
 	
 private:
+	void PlayerAdjustment();
+	void FlashScreen();
+	void ChangeGameToDialogue();
+	void ChangeDialogueToGame();
+	void SetCameraMove();
+	void SetPlayWidget();
+	void SetDialogSceneWidget();
 	void SetNearlyActor();
+	void StartDialogue();
+	void FinishDialogue();
+	void NextDialogue();
 
 private:
 	class ARPGMaker_psgCharacter* PlayerCharacter;
@@ -44,4 +51,5 @@ private:
 	TSubclassOf<class UBlackScreenWidget> BlackScreenWidgetClass;
 	class UTowerRpgHudWidget* HUDWidget;
 	TSubclassOf<class UTowerRpgHudWidget> HUDWidgetClass;
+	bool bPlayDialogue = false;
 };
