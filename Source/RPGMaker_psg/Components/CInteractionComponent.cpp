@@ -95,10 +95,30 @@ void UCInteractionComponent::InitWidget()
 	}
 }
 
-void UCInteractionComponent::PlayerAdjustment()
+void UCInteractionComponent::PlayerAdjustment(EInputMode inputMode)
 {
-	FInputModeGameAndUI inputMode;
-	PlayerController->SetInputMode(inputMode);
+	switch (inputMode)
+	{
+	case EInputMode::GameOnly:
+	{
+		FInputModeGameOnly inputMode;
+		PlayerController->SetInputMode(inputMode);
+		break;
+	}
+	case EInputMode::UIOnly:
+	{
+		FInputModeUIOnly inputMode;
+		PlayerController->SetInputMode(inputMode);
+		break;
+	}
+	case EInputMode::GameAndUI:
+	{
+		FInputModeGameAndUI inputMode;
+		PlayerController->SetInputMode(inputMode);
+		break;
+	}
+	}
+	
 }
 
 void UCInteractionComponent::FlashScreen()
@@ -108,7 +128,7 @@ void UCInteractionComponent::FlashScreen()
 
 	BlackScreenWidget->SetVisibility(ESlateVisibility::Visible);
 	BlackScreenWidget->PlayAnimFadeInOut();
-	if (bPlayDialogue == false)
+	if (bPlayDialogue == true)
 	{
 		GetWorld()->GetTimerManager().SetTimer(timerCameraHandle, this, &UCInteractionComponent::ChangeGameToDialogue, 0.2f, false);
 	}
@@ -122,32 +142,42 @@ void UCInteractionComponent::FlashScreen()
 void UCInteractionComponent::ChangeGameToDialogue()
 {
 	SetCameraMove();
-	SetDialogSceneWidget();
+	SetDialogSceneWidget(true);
 }
 
 void UCInteractionComponent::ChangeDialogueToGame()
 {
+	SetCameraMove();
+	SetDialogSceneWidget(false);
 }
 
 void UCInteractionComponent::SetCameraMove()
 {
-	ACInteractCharacter* interactionCharacter = Cast<ACInteractCharacter>(TargetActor);
+	if (bPlayDialogue)
+	{
+		ACInteractCharacter* interactionCharacter = Cast<ACInteractCharacter>(TargetActor);
 
-	AActor* viewTarget = interactionCharacter->GetSceneCamera()->GetOwner();
-	PlayerController->SetViewTargetWithBlend(viewTarget);
-	
-	FTransform transform;
-	float x = interactionCharacter->GetPlayerPosition().X;
-	float y = interactionCharacter->GetPlayerPosition().Y;
-	float z = PlayerCharacter->GetRootComponent()->GetComponentLocation().Z;
-	transform.SetLocation(FVector(x, y, z));
+		AActor* viewTarget = interactionCharacter->GetSceneCamera()->GetOwner();
+		PlayerController->SetViewTargetWithBlend(viewTarget);
 
-	float roll = PlayerCharacter->GetRootComponent()->GetComponentRotation().Roll;
-	float pitch = PlayerCharacter->GetRootComponent()->GetComponentRotation().Pitch;
-	float yaw = interactionCharacter->GetMesh()->GetComponentRotation().Yaw - 90.f;
-	transform.SetRotation(FQuat(FRotator(pitch, yaw, roll)));
+		FTransform transform;
+		float x = interactionCharacter->GetPlayerPosition().X;
+		float y = interactionCharacter->GetPlayerPosition().Y;
+		float z = PlayerCharacter->GetRootComponent()->GetComponentLocation().Z;
+		transform.SetLocation(FVector(x, y, z));
 
-	PlayerCharacter->GetRootComponent()->SetWorldTransform(transform);
+		float roll = PlayerCharacter->GetRootComponent()->GetComponentRotation().Roll;
+		float pitch = PlayerCharacter->GetRootComponent()->GetComponentRotation().Pitch;
+		float yaw = interactionCharacter->GetMesh()->GetComponentRotation().Yaw - 90.f;
+		transform.SetRotation(FQuat(FRotator(pitch, yaw, roll)));
+
+		PlayerCharacter->GetRootComponent()->SetWorldTransform(transform);
+	}
+	else
+	{
+		AActor* viewTarget = PlayerCharacter->GetFollowCamera()->GetOwner();
+		PlayerController->SetViewTargetWithBlend(viewTarget);
+	}
 }
 
 
@@ -162,16 +192,26 @@ void UCInteractionComponent::SetPlayWidget()
 	}
 }
 
-void UCInteractionComponent::SetDialogSceneWidget()
+void UCInteractionComponent::SetDialogSceneWidget(bool bActive)
 {
 	if (HUDWidget != nullptr)
 	{
-		HUDWidget->SetVisibilityQuestLog(ESlateVisibility::Hidden);
-		ACInteractCharacter* target = Cast<ACInteractCharacter>(TargetActor);
-		if (target != nullptr)
-			HUDWidget->SetVisibilityNpcDialogue(ESlateVisibility::Visible, target->GetDialogueList());
+		if (bActive == true)
+		{
+			HUDWidget->SetVisibilityQuestLog(ESlateVisibility::Hidden);
+			ACInteractCharacter* target = Cast<ACInteractCharacter>(TargetActor);
+			if (target != nullptr)
+				HUDWidget->SetVisibilityNpcDialogue(ESlateVisibility::Visible, target->GetDialogueList());
+			else
+				HUDWidget->SetVisibilityNpcDialogue(ESlateVisibility::Visible);
+			PlayerController->bShowMouseCursor = true;
+		}
 		else
-			HUDWidget->SetVisibilityNpcDialogue(ESlateVisibility::Visible);
+		{
+			HUDWidget->SetVisibilityQuestLog(ESlateVisibility::Visible);
+			HUDWidget->SetVisibilityNpcDialogue(ESlateVisibility::Hidden);
+			PlayerController->bShowMouseCursor = false;
+		}
 	}
 }
 
@@ -198,23 +238,28 @@ void UCInteractionComponent::StartDialogue()
 	{
 		SetNearlyActor();
 
-		GEngine->AddOnScreenDebugMessage(-1, 3.f, FColor::Green, "OnInteraction");
 		ACInteractCharacter* target = Cast<ACInteractCharacter>(TargetActor);
 		if (target != nullptr)
 		{
 			GEngine->AddOnScreenDebugMessage(-1, 3.f, FColor::Green, target->GetName());
+			bPlayDialogue = true;
 
-			PlayerAdjustment();
+			PlayerAdjustment(EInputMode::GameAndUI);
 			FlashScreen();
 			target->ActivateDialogue_Interface();
-
-			bPlayDialogue = true;
 		}
 	}
 }
 
 void UCInteractionComponent::FinishDialogue()
 {
+	ACInteractCharacter* target = Cast<ACInteractCharacter>(TargetActor);
+	if (target != nullptr)
+	{
+		PlayerAdjustment(EInputMode::GameOnly);
+		FlashScreen();
+		target->ActivateDialogue_Interface();
+	}
 }
 
 void UCInteractionComponent::NextDialogue()
@@ -222,6 +267,6 @@ void UCInteractionComponent::NextDialogue()
 	bPlayDialogue = HUDWidget->NextNPCDialogue();
 	if (bPlayDialogue == false)
 	{
-
+		FinishDialogue();
 	}
 }

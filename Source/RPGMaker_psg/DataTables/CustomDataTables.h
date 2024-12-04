@@ -8,10 +8,7 @@ UENUM(BlueprintType)
 enum class EMessageButton : uint8
 {
 	None,
-	Message1,
-	Message2,
-	Message3,
-	Message4,
+	AccpetQuest,
 	MAX
 };
 

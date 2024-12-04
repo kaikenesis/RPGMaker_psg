@@ -13,16 +13,29 @@ public:
 	virtual void NativeConstruct() override;
 
 public:
-	void PlayAnimFadeInResponsse();
-	void PlayAnimFadeOutResponsse();
+	void PlayAnimFadeInResponsse(int buttonCount);
+	void PlayAnimFadeOutResponsse(int buttonCount);
 	
 	void ShowDialogue(class UDataTable* inDialogueList);
 	void HideDialogue();
 	bool NextDialogue();
 
+	UFUNCTION()
+	void OnClickedButton1();
+	UFUNCTION()
+	void OnClickedButton2();
+	UFUNCTION()
+	void OnClickedButton3();
+	UFUNCTION()
+	void OnClickedButton4();
+
 private:
 	void Init();
 	void DialogueSetting(class UDataTable* inDialogueList);
+	void ResponseSetting(struct FDataTableRowHandle inResponse);
+	void SetDialogueMessage(TArray<struct FDialogueSettings*> inDialogues);
+	void ShowResponse(int buttonCount);
+	void HideResponse(int buttonCount);
 
 public:
 	UPROPERTY(BlueprintReadOnly, Transient, meta = (BindWidgetAnim))
@@ -30,7 +43,7 @@ public:
 
 protected:
 	UPROPERTY(meta = (BindWidget))
-	class UOverlay* Dialog;
+	class UOverlay* Dialogue;
 
 	UPROPERTY(meta = (BindWidget))
 	class UTextBlock* Name;
@@ -68,5 +81,6 @@ protected:
 private:
 	class UDataTable* CurrentDialogueList;
 	TArray<struct FDialogueSettings*> CurrentDialogue;
+	TArray<struct FResponseMessageSettings*> CurrentResponse;
 	int curPage = 0;
 };

@@ -9,6 +9,15 @@ class RPGMAKER_PSG_API UCInteractionComponent : public UActorComponent
 {
 	GENERATED_BODY()
 
+public:
+	enum class EInputMode
+	{
+		GameOnly,
+		UIOnly,
+		GameAndUI,
+		MAX
+	};
+
 public:	
 	UCInteractionComponent();
 
@@ -28,14 +37,16 @@ public:
 	void InitWidget();
 	
 private:
-	void PlayerAdjustment();
+	void PlayerAdjustment(EInputMode inputMode);
 	void FlashScreen();
+
 	void ChangeGameToDialogue();
 	void ChangeDialogueToGame();
 	void SetCameraMove();
 	void SetPlayWidget();
-	void SetDialogSceneWidget();
+	void SetDialogSceneWidget(bool bActive);
 	void SetNearlyActor();
+
 	void StartDialogue();
 	void FinishDialogue();
 	void NextDialogue();
