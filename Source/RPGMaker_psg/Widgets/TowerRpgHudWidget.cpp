@@ -2,6 +2,11 @@
 #include "Widgets/QuestLogWidget.h"
 #include "Widgets/NpcDialogueWidget.h"
 
+void UTowerRpgHudWidget::BeginPlay()
+{
+	NpcDialogue->OnQuestAccepted.AddDynamic(QuestLog, UQuestLogWidget::AddQuestInfo);
+}
+
 void UTowerRpgHudWidget::SetVisibilityQuestLog(ESlateVisibility InVisibility)
 {
 	QuestLog->SetVisibility(InVisibility);

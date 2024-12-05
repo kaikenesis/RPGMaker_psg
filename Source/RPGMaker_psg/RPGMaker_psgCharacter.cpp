@@ -139,7 +139,14 @@ void ARPGMaker_psgCharacter::OnLook(const FInputActionValue& Value)
 
 void ARPGMaker_psgCharacter::OnDoAction(const FInputActionValue& Value)
 {
-	GEngine->AddOnScreenDebugMessage(-1, 3.f, FColor::Green, "Attack");
+	if (InteractionComp->IsPlayDialogue()) 
+	{
+		InteractionComp->OnInteraction();
+	}
+	else
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 3.f, FColor::Green, "Attack");
+	}
 }
 
 void ARPGMaker_psgCharacter::OnSprint(const FInputActionValue& Value)

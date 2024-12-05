@@ -4,6 +4,8 @@
 #include "Blueprint/UserWidget.h"
 #include "NpcDialogueWidget.generated.h"
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FQuestAcceptedSignature, struct FDataTableRowHandle, InQuestInfoDataTable);
+
 UCLASS()
 class RPGMAKER_PSG_API UNpcDialogueWidget : public UUserWidget
 {
@@ -29,11 +31,16 @@ public:
 	UFUNCTION()
 	void OnClickedButton4();
 
+public:
+	FQuestAcceptedSignature OnQuestAccepted;
+
 private:
 	void Init();
 	void DialogueSetting(class UDataTable* inDialogueList);
 	void ResponseSetting(struct FDataTableRowHandle inResponse);
 	void SetDialogueMessage(TArray<struct FDialogueSettings*> inDialogues);
+	void SetCurrentDialogue(struct FDataTableRowHandle inDialogue);
+	void SetQuestLog(struct FDataTableRowHandle inDialogue);
 	void ShowResponse(int buttonCount);
 	void HideResponse(int buttonCount);
 

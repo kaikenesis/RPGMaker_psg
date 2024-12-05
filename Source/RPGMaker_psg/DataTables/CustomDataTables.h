@@ -18,7 +18,7 @@ struct FDialogueList : public FTableRowBase
 	GENERATED_BODY()
 public:
 	UPROPERTY(BlueprintReadOnly, EditAnywhere)
-	FDataTableRowHandle DialogueHandles;
+	FDataTableRowHandle DialogueHandle;
 
 	UPROPERTY(BlueprintReadOnly, EditAnywhere)
 	FName Name;
@@ -34,7 +34,7 @@ struct FDialogueSettings : public FTableRowBase
 	GENERATED_BODY()
 public:
 	UPROPERTY(BlueprintReadOnly, EditAnywhere)
-	FDataTableRowHandle ResponseHandles;
+	FDataTableRowHandle ResponseHandle;
 
 	UPROPERTY(BlueprintReadOnly, EditAnywhere)
 	FText Message;
@@ -46,11 +46,29 @@ struct FResponseMessageSettings : public FTableRowBase
 	GENERATED_BODY()
 public:
 	UPROPERTY(BlueprintReadOnly, EditAnywhere)
-	FDataTableRowHandle DialogueHandles;
+	FDataTableRowHandle DialogueHandle;
 
 	UPROPERTY(BlueprintReadOnly, EditAnywhere)
 	EMessageButton MessageButton;
 
 	UPROPERTY(BlueprintReadOnly, EditAnywhere)
 	FText PlayerResponse;
+
+	UPROPERTY(BlueprintReadOnly, EditAnywhere)
+	FDataTableRowHandle QuestInfoHandle;
+};
+
+USTRUCT(BlueprintType)
+struct FQuestInfo : public FTableRowBase
+{
+	GENERATED_BODY()
+public:
+	UPROPERTY(BlueprintReadOnly, EditAnywhere)
+	FText QuestName;
+
+	UPROPERTY(BlueprintReadOnly, EditAnywhere)
+	FText QuestInfo;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	bool bComplete;
 };

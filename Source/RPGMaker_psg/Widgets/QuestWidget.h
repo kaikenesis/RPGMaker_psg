@@ -4,20 +4,24 @@
 #include "Blueprint/UserWidget.h"
 #include "QuestWidget.generated.h"
 
+
+
 UCLASS()
 class RPGMAKER_PSG_API UQuestWidget : public UUserWidget
 {
 	GENERATED_BODY()
-	
-public:
-	FORCEINLINE class UTextBlock* GetName() const { return Name; }
-	FORCEINLINE class UTextBlock* GetCompleteInfo() const { return CompleteInfo; }
-	FORCEINLINE class UTextBlock* GetInfo() const { return Info; }
 
 public:
-	void SetName();
+	virtual void NativeConstruct() override;
+
+public:
+	FORCEINLINE bool IsActive() { return bActive; }
+
+public:
+	void SetQuestInfo(struct FDataTableRowHandle InQuestInfoDataTable);
+	void SetName(FText questName);
 	void SetCompleteInfo(bool IsComplete);
-	void SetInfo();
+	void SetInfo(FText questInfo);
 
 protected:
 	UPROPERTY(meta = (BindWidget))
@@ -28,4 +32,7 @@ protected:
 
 	UPROPERTY(meta = (BindWidget))
 	class UTextBlock* Info;
+
+private:
+	bool bActive;
 };

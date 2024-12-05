@@ -91,7 +91,7 @@ void UNpcDialogueWidget::DialogueSetting(UDataTable* inDialogueList)
 	if (!list.IsEmpty())
 	{
 		// list[i] -> i값은 플레이어에서 해당 NPC와 어느정도 대화를 진행했었는지 저장하는 변수를 만들어서 관리
-		list[0]->DialogueHandles.DataTable->GetAllRows("", dialogues);
+		list[0]->DialogueHandle.DataTable->GetAllRows("", dialogues);
 		CurrentDialogue = dialogues;
 	}
 	
@@ -117,9 +117,25 @@ void UNpcDialogueWidget::ResponseSetting(FDataTableRowHandle inResponse)
 void UNpcDialogueWidget::SetDialogueMessage(TArray<struct FDialogueSettings*> inDialogues)
 {
 	ChatBox->SetText(inDialogues[curPage]->Message);
-	if (inDialogues[curPage]->ResponseHandles.DataTable != nullptr)
+	if (inDialogues[curPage]->ResponseHandle.DataTable != nullptr)
 	{
-		ResponseSetting(inDialogues[curPage]->ResponseHandles);
+		ResponseSetting(inDialogues[curPage]->ResponseHandle);
+	}
+}
+
+void UNpcDialogueWidget::SetCurrentDialogue(FDataTableRowHandle inDialogue)
+{
+	if (inDialogue.DataTable != nullptr)
+	{
+		inDialogue.DataTable->GetAllRows("", CurrentDialogue);
+	}
+}
+
+void UNpcDialogueWidget::SetQuestLog(FDataTableRowHandle inDialogue)
+{
+	if (inDialogue.DataTable != nullptr && OnQuestAccepted.IsBound())
+	{
+		OnQuestAccepted.Broadcast(inDialogue);
 	}
 }
 
@@ -169,41 +185,36 @@ void UNpcDialogueWidget::HideResponse(int buttonCount)
 
 void UNpcDialogueWidget::OnClickedButton1()
 {
-	GEngine->AddOnScreenDebugMessage(-1, 3.f, FColor::Green, "OnClickedButton1");
-	if (CurrentResponse[0]->DialogueHandles.DataTable != nullptr)
-	{
-		CurrentResponse[0]->DialogueHandles.DataTable->GetAllRows("", CurrentDialogue);
-	}
+	SetCurrentDialogue(CurrentResponse[0]->DialogueHandle);
+	if (CurrentResponse[0]->MessageButton == EMessageButton::AccpetQuest)
+		SetQuestLog(CurrentResponse[0]->QuestInfoHandle);
 	PlayAnimFadeOutResponsse(CurrentResponse.Num());
 	NextDialogue();
 }
 
 void UNpcDialogueWidget::OnClickedButton2()
 {
-	if (CurrentResponse[1]->DialogueHandles.DataTable != nullptr)
-	{
-		CurrentResponse[1]->DialogueHandles.DataTable->GetAllRows("", CurrentDialogue);
-	}
+	SetCurrentDialogue(CurrentResponse[1]->DialogueHandle);
+	if (CurrentResponse[1]->MessageButton == EMessageButton::AccpetQuest)
+		SetQuestLog(CurrentResponse[1]->QuestInfoHandle);
 	PlayAnimFadeOutResponsse(CurrentResponse.Num());
 	NextDialogue();
 }
 
 void UNpcDialogueWidget::OnClickedButton3()
 {
-	if (CurrentResponse[2]->DialogueHandles.DataTable != nullptr)
-	{
-		CurrentResponse[2]->DialogueHandles.DataTable->GetAllRows("", CurrentDialogue);
-	}
+	SetCurrentDialogue(CurrentResponse[2]->DialogueHandle);
+	if (CurrentResponse[2]->MessageButton == EMessageButton::AccpetQuest)
+		SetQuestLog(CurrentResponse[2]->QuestInfoHandle);
 	PlayAnimFadeOutResponsse(CurrentResponse.Num());
 	NextDialogue();
 }
 
 void UNpcDialogueWidget::OnClickedButton4()
 {
-	if (CurrentResponse[3]->DialogueHandles.DataTable != nullptr)
-	{
-		CurrentResponse[3]->DialogueHandles.DataTable->GetAllRows("", CurrentDialogue);
-	}
+	SetCurrentDialogue(CurrentResponse[3]->DialogueHandle);
+	if (CurrentResponse[3]->MessageButton == EMessageButton::AccpetQuest)
+		SetQuestLog(CurrentResponse[3]->QuestInfoHandle);
 	PlayAnimFadeOutResponsse(CurrentResponse.Num());
 	NextDialogue();
 }

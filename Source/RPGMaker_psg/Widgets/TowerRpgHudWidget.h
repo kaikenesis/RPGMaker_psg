@@ -8,15 +8,17 @@ UCLASS()
 class RPGMAKER_PSG_API UTowerRpgHudWidget : public UUserWidget
 {
 	GENERATED_BODY()
-	
+
 public:
-	FORCEINLINE class UQuestLogWidget* GetQuestLog() const { return QuestLog; }
-	FORCEINLINE class UNpcDialogueWidget* GetNpcDialogue() const { return NpcDialogue; }
+	virtual void BeginPlay();
 
 public:
 	void SetVisibilityQuestLog(ESlateVisibility InVisibility);
 	void SetVisibilityNpcDialogue(ESlateVisibility InVisibility, class UDataTable* inDialogueList = nullptr);
 	bool NextNPCDialogue();
+
+protected:
+	void AddQuestLog();
 
 private:
 	UPROPERTY(meta = (BindWidget))
