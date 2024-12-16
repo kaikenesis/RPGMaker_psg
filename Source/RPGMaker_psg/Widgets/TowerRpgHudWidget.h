@@ -10,7 +10,7 @@ class RPGMAKER_PSG_API UTowerRpgHudWidget : public UUserWidget
 	GENERATED_BODY()
 
 public:
-	virtual void BeginPlay();
+	virtual void NativeConstruct() override;
 
 public:
 	void SetVisibilityQuestLog(ESlateVisibility InVisibility);

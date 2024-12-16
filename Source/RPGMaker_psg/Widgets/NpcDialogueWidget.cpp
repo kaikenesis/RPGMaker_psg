@@ -4,7 +4,6 @@
 #include "Components/Overlay.h"
 #include "Components/TextBlock.h"
 #include "Components/Button.h"
-#include "Components/VerticalBox.h"
 #include "Animation/WidgetAnimation.h"
 #include "Kismet/KismetArrayLibrary.h"
 
@@ -185,6 +184,8 @@ void UNpcDialogueWidget::HideResponse(int buttonCount)
 
 void UNpcDialogueWidget::OnClickedButton1()
 {
+	if (CurrentResponse.Num() <= 0) return;
+
 	SetCurrentDialogue(CurrentResponse[0]->DialogueHandle);
 	if (CurrentResponse[0]->MessageButton == EMessageButton::AccpetQuest)
 		SetQuestLog(CurrentResponse[0]->QuestInfoHandle);
@@ -194,6 +195,8 @@ void UNpcDialogueWidget::OnClickedButton1()
 
 void UNpcDialogueWidget::OnClickedButton2()
 {
+	if (CurrentResponse.Num() <= 0) return;
+
 	SetCurrentDialogue(CurrentResponse[1]->DialogueHandle);
 	if (CurrentResponse[1]->MessageButton == EMessageButton::AccpetQuest)
 		SetQuestLog(CurrentResponse[1]->QuestInfoHandle);
@@ -203,6 +206,8 @@ void UNpcDialogueWidget::OnClickedButton2()
 
 void UNpcDialogueWidget::OnClickedButton3()
 {
+	if (CurrentResponse.Num() <= 0) return;
+
 	SetCurrentDialogue(CurrentResponse[2]->DialogueHandle);
 	if (CurrentResponse[2]->MessageButton == EMessageButton::AccpetQuest)
 		SetQuestLog(CurrentResponse[2]->QuestInfoHandle);
@@ -212,6 +217,8 @@ void UNpcDialogueWidget::OnClickedButton3()
 
 void UNpcDialogueWidget::OnClickedButton4()
 {
+	if (CurrentResponse.Num() <= 0) return;
+
 	SetCurrentDialogue(CurrentResponse[3]->DialogueHandle);
 	if (CurrentResponse[3]->MessageButton == EMessageButton::AccpetQuest)
 		SetQuestLog(CurrentResponse[3]->QuestInfoHandle);

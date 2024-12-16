@@ -25,7 +25,6 @@ public:
 
 	UPROPERTY(BlueprintReadOnly, EditAnywhere)
 	FName Description;
-
 };
 
 USTRUCT(BlueprintType)
@@ -68,7 +67,34 @@ public:
 
 	UPROPERTY(BlueprintReadOnly, EditAnywhere)
 	FText QuestInfo;
+};
 
-	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+USTRUCT(BlueprintType)
+struct FQuestProgress : public FTableRowBase
+{
+	GENERATED_BODY()
+public:
+	UPROPERTY(BlueprintReadOnly, EditAnywhere)
+	FText QuestName;
+
+	UPROPERTY(BlueprintReadOnly, EditAnywhere)
+	bool bAccept;
+
+	UPROPERTY(BlueprintReadOnly, EditAnywhere)
 	bool bComplete;
+
+	UPROPERTY(BlueprintReadOnly, EditAnywhere)
+	bool bClear;
+};
+
+USTRUCT(BlueprintType)
+struct FQuestList : public FTableRowBase
+{
+	GENERATED_BODY()
+public:
+	UPROPERTY(BlueprintReadOnly, EditAnywhere)
+	FText NPCName;
+
+	UPROPERTY(BlueprintReadOnly, EditAnywhere)
+	FDataTableRowHandle QuestProgressHandle;
 };

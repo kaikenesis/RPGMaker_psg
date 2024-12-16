@@ -11,6 +11,7 @@ void UQuestLogWidget::AddQuestInfo(FDataTableRowHandle InQuestInfoDataTable)
 		if (questWidget != nullptr && questWidget->IsActive() == false)
 		{
 			questWidget->SetQuestInfo(InQuestInfoDataTable);
+			break;
 		}
 	}
 }

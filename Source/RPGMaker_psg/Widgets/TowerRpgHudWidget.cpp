@@ -2,9 +2,11 @@
 #include "Widgets/QuestLogWidget.h"
 #include "Widgets/NpcDialogueWidget.h"
 
-void UTowerRpgHudWidget::BeginPlay()
+void UTowerRpgHudWidget::NativeConstruct()
 {
-	NpcDialogue->OnQuestAccepted.AddDynamic(QuestLog, UQuestLogWidget::AddQuestInfo);
+	Super::NativeConstruct();
+
+	NpcDialogue->OnQuestAccepted.AddDynamic(QuestLog, &UQuestLogWidget::AddQuestInfo);
 }
 
 void UTowerRpgHudWidget::SetVisibilityQuestLog(ESlateVisibility InVisibility)
