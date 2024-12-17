@@ -16,9 +16,13 @@ public:
 
 public:
 	FORCEINLINE bool IsActive() { return bActive; }
+	FORCEINLINE bool IsAccepted(FString questCode) { return code == questCode; }
+	FORCEINLINE void SetQuestCode(FString questCode) { code = questCode; }
 
 public:
-	void SetQuestInfo(struct FDataTableRowHandle InQuestInfoDataTable);
+	void SetQuestInfo(FDataTableRowHandle InQuestInfoDataTable);
+	
+private:
 	void SetName(FText questName);
 	void SetCompleteInfo(bool IsComplete);
 	void SetInfo(FText questInfo);
@@ -35,4 +39,5 @@ protected:
 
 private:
 	bool bActive;
+	FString code;
 };

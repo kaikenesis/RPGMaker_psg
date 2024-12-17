@@ -19,10 +19,9 @@ void UQuestWidget::SetQuestInfo(FDataTableRowHandle InQuestInfoDataTable)
 	TArray<FQuestInfo*> questInfos;
 	InQuestInfoDataTable.DataTable->GetAllRows("", questInfos);
 
-	//if(questInfos[0]->)
-
-	SetName(questInfos[0]->QuestName);
-	SetInfo(questInfos[0]->QuestInfo);
+	code = questInfos[0]->QuestCode;
+	Name->SetText(questInfos[0]->QuestName);
+	Info->SetText(questInfos[0]->QuestInfo);
 	SetVisibility(ESlateVisibility::Visible);
 	bActive = true;
 }

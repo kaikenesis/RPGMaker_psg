@@ -53,6 +53,7 @@ public:
 	UPROPERTY(BlueprintReadOnly, EditAnywhere)
 	FText PlayerResponse;
 
+	// 퀘스트 수락시 받을 퀘스트정보
 	UPROPERTY(BlueprintReadOnly, EditAnywhere)
 	FDataTableRowHandle QuestInfoHandle;
 };
@@ -67,6 +68,13 @@ public:
 
 	UPROPERTY(BlueprintReadOnly, EditAnywhere)
 	FText QuestInfo;
+
+	UPROPERTY(BlueprintReadOnly, EditAnywhere)
+	FString QuestCode;
+
+	// 퀘스트 유형 (무엇을 몇 마리 잡아라, 어디를 가라, 무엇을 해라 등등)
+	UPROPERTY(BlueprintReadOnly, EditAnywhere)
+	FDataTableRowHandle QuestTypeHandle;
 };
 
 USTRUCT(BlueprintType)
@@ -78,6 +86,9 @@ public:
 	FText QuestName;
 
 	UPROPERTY(BlueprintReadOnly, EditAnywhere)
+	FString QuestCode;
+
+	UPROPERTY(BlueprintReadOnly, EditAnywhere)
 	bool bAccept;
 
 	UPROPERTY(BlueprintReadOnly, EditAnywhere)
@@ -87,6 +98,7 @@ public:
 	bool bClear;
 };
 
+// 퀘스트 진행상황 체크용 DT
 USTRUCT(BlueprintType)
 struct FQuestList : public FTableRowBase
 {
